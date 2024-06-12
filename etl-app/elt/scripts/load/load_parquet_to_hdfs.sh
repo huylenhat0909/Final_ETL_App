@@ -2,16 +2,16 @@
 
 # Array of local directories and corresponding HDFS directories
 # declare -A directories=(
-#     ["/home/anhcu/Project/Stock_project/elt/data/completed/load_api_ohlcs_to_dl"]="/user/anhcu/datalake/ohlcs"
-#     ["/home/anhcu/Project/Stock_project/elt/data/completed/load_db_to_dl"]="/user/anhcu/datalake/companies"
-#     ["/home/anhcu/Project/Stock_project/elt/data/completed/load_api_news_to_dl"]="/user/anhcu/datalake/news"
+#     ["/home/anhcu/Final_ETL_App/etl-app/elt/data/completed/load_api_ohlcs_to_dl"]="/user/anhcu/datalake/ohlcs"
+#     ["/home/anhcu/Final_ETL_App/etl-app/elt/data/completed/load_db_to_dl"]="/user/anhcu/datalake/companies"
+#     ["/home/anhcu/Final_ETL_App/etl-app/elt/data/completed/load_api_news_to_dl"]="/user/anhcu/datalake/news"
 # )
 
 # Variable to store the latest file names
 latest_files=""
 
 # Directory paths
-local_directory=/home/anhcu/Project/Stock_project/elt/data/completed/load_db_to_dl
+local_directory=/home/anhcu/Final_ETL_App/etl-app/elt/data/completed/load_db_to_dl
 hdfs_directory=/user/anhcu/datalake/companies
 # hdfs_directory="${directories[$local_directory]}"
 
@@ -31,7 +31,7 @@ fi
 
 # Loop through the pairs of local and HDFS directories
 # for local_directory in "${!directories[@]}"; do
-local_directory=/home/anhcu/Project/Stock_project/elt/data/completed/load_api_ohlcs_to_dl
+local_directory=/home/anhcu/Final_ETL_App/etl-app/elt/data/completed/load_api_ohlcs_to_dl
 hdfs_directory=/user/anhcu/datalake/ohlcs
 # hdfs_directory="${directories[$local_directory]}"
 
@@ -50,7 +50,7 @@ else
 fi
 # done
 
-local_directory=/home/anhcu/Project/Stock_project/elt/data/completed/load_api_news_to_dl
+local_directory=/home/anhcu/Final_ETL_App/etl-app/elt/data/completed/load_api_news_to_dl
 hdfs_directory=/user/anhcu/datalake/news
 # hdfs_directory="${directories[$local_directory]}"
 

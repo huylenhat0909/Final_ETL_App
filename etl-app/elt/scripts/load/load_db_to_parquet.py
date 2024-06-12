@@ -25,16 +25,22 @@ def query_to_parquet(query, conn, parquet_file_path):
     # Execute the query and fetch the result into a DataFrame
     df = pd.read_sql(query, conn)
     print(df.info())
+    print(df)
     
     # Save the DataFrame to a Parquet file
     df.to_parquet(parquet_file_path, engine='pyarrow')
+    
+# def query_to_parquet(query, conn):
+#     # Execute the query and fetch the result into a DataFrame
+#     df = pd.read_sql(query, conn)
+#     print(df)
 
 # Path to the SQL query file
-query_file_path = r'/home/anhcu/Project/Stock_project/elt/scripts/extract/extract_db_to_parquet.sql'
+query_file_path = r'/home/anhcu/Final_ETL_App/etl-app/elt/scripts/extract/extract_db_to_parquet.sql'
 
 # Path to the output Parquet file
 date = datetime.date.today().strftime("%Y_%m_%d")
-parquet_file_path = r'/home/anhcu/Project/Stock_project/elt/data/completed/load_db_to_dl/load_db_to_dl_' + f"{date}.parquet"
+parquet_file_path = r'/home/anhcu/Final_ETL_App/etl-app/elt/data/completed/load_db_to_dl/load_db_to_dl_' + f"{date}.parquet"
 
 # Read the SQL query from the file
 query = read_query_from_file(query_file_path)

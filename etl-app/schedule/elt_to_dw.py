@@ -9,7 +9,7 @@ import subprocess
 import logging
 
 # Add the paths to sys.path
-sys.path.append('/home/anhcu/Project/Stock_project/elt/scripts/transform')
+sys.path.append('/home/anhcu/Final_ETL_App/etl-app/elt/scripts/transform')
 import transform_to_datawarehouse_1
 import transform_to_datawarehouse_2
 import transform_to_datawarehouse_3
