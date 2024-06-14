@@ -23,5 +23,6 @@ LEFT JOIN industries i
 LEFT JOIN sicindustries s 
 	ON c.company_sic_id = s.sic_id
 WHERE 
-    DATE_TRUNC('month', c.company_update_time_stamp) >= DATE_TRUNC('month', CURRENT_DATE)
+    DATE_TRUNC('day', c.company_update_time_stamp) = DATE_TRUNC('day', CURRENT_DATE)
+    AND DATE_TRUNC('month', c.company_update_time_stamp) = DATE_TRUNC('month', CURRENT_DATE)
 	AND DATE_TRUNC('year', c.company_update_time_stamp) = DATE_TRUNC('year', CURRENT_DATE);

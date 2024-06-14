@@ -33,26 +33,26 @@ with DAG(
 ) as dag:
     crawl_news = BashOperator(
         task_id='crawl_news',
-        bash_command='/bin/python3 /home/anhcu/Project/Stock_project/elt/scripts/extract/crawl_news.py',
+        bash_command='/bin/python3 /home/anhcu/Final_ETL_App/etl-app/elt/scripts/extract/crawl_news.py',
     )
 
     crawl_ohlcs = BashOperator(
         task_id='crawl_ohlcs',
-        bash_command='/bin/python3 /home/anhcu/Project/Stock_project/elt/scripts/extract/crawl_ohlcs.py',
+        bash_command='/bin/python3 /home/anhcu/Final_ETL_App/etl-app/elt/scripts/extract/crawl_ohlcs.py',
     )
 
     load_api_to_parquet = BashOperator(
         task_id='load_api_to_parquet',
-        bash_command='/bin/python3 /home/anhcu/Project/Stock_project/elt/scripts/load/load_api_to_parquet.py',
+        bash_command='/bin/python3 /home/anhcu/Final_ETL_App/etl-app/elt/scripts/load/load_api_to_parquet.py',
     )
 
     load_db_to_parquet = BashOperator(
         task_id='load_db_to_parquet',
-        bash_command='/bin/python3 /home/anhcu/Project/Stock_project/elt/scripts/load/load_db_to_parquet.py',
+        bash_command='/bin/python3 /home/anhcu/Final_ETL_App/etl-app/elt/scripts/load/load_db_to_parquet.py',
     )
 
     def run_shell_script():
-        result = subprocess.run(['bash', '/home/anhcu/Project/Stock_project/elt/scripts/load/load_parquet_to_hdfs.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = subprocess.run(['bash', '/home/anhcu/Final_ETL_App/etl-app/elt/scripts/load/load_parquet_to_hdfs.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.returncode != 0:
             raise Exception(f"Shell script failed with error: {result.stderr.decode()}")
         output = result.stdout.decode()
@@ -67,7 +67,7 @@ with DAG(
 
     # load_parquet_to_hdfs = BashOperator(
     #     task_id='load_parquet_to_hdfs',
-    #     bash_command='bash /home/anhcu/Project/Stock_project/elt/scripts/load/load_parquet_to_hdfs.sh',
+    #     bash_command='bash /home/anhcu/Final_ETL_App/etl-app/elt/scripts/load/load_parquet_to_hdfs.sh',
     #     do_xcom_push=True,  # Sử dụng do_xcom_push để đẩy kết quả lên XCom
     # )
 
