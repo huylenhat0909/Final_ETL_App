@@ -57,7 +57,7 @@ def save_to_json(dataframe, filename):
     dataframe.to_json(filename, orient='records', lines=True)
     print(f"Saved dataframe to {filename}")
 
-if __name__ == "__main__":
+def transform_to_database_2():
     # Read latest markets data
     markets = read_latest_file_in_directory('/home/anhcu/Final_ETL_App/etl-app/backend/data/raw/markets')
     

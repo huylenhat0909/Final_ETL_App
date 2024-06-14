@@ -59,7 +59,7 @@ def insert_data_from_json(file_path, table_name, columns, conflict_columns):
     conn.close()
     print(f"Inserted data into {table_name}")
 
-if __name__ == "__main__":
+def load_json_to_db_1():
     # Insert data into 'regions' table
     insert_data_from_json(
         get_latest_file_in_directory(

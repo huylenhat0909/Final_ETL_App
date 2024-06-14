@@ -57,7 +57,7 @@ def save_to_json(dataframe, filename):
     dataframe.to_json(filename, orient='records', lines=True)
     print(f"Saved dataframe to {filename}")
 
-if __name__ == "__main__":
+def transform_to_database_3():
     # Database connection parameters
     DATABASE_TYPE = 'postgresql'
     ENDPOINT = 'localhost'

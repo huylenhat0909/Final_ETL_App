@@ -52,16 +52,17 @@ def load_db_to_dl(input_directory, output_directory):
     else:
         print("No JSON files found in the directory")
 
-# Convert News JSON files to Parquet
-# Path to the directory containing the JSON files
-input_directory = r'/home/anhcu/Final_ETL_App/etl-app/elt/data/raw/news'
-# Path to the directory to save the Parquet files
-output_directory = r'/home/anhcu/Final_ETL_App/etl-app/elt/data/completed/load_api_news_to_dl'
-load_db_to_dl(input_directory, output_directory)
+def load_api_to_parquet():
+    # Convert News JSON files to Parquet
+    # Path to the directory containing the JSON files
+    input_directory = r'/home/anhcu/Final_ETL_App/etl-app/elt/data/raw/news'
+    # Path to the directory to save the Parquet files
+    output_directory = r'/home/anhcu/Final_ETL_App/etl-app/elt/data/completed/load_api_news_to_dl'
+    load_db_to_dl(input_directory, output_directory)
 
-# Convert OHLCs JSON files to Parquet
-# Path to the directory containing the JSON files
-input_directory = r'/home/anhcu/Final_ETL_App/etl-app/elt/data/raw/ohlcs'
-# Path to the directory to save the Parquet files
-output_directory = r'/home/anhcu/Final_ETL_App/etl-app/elt/data/completed/load_api_ohlcs_to_dl'
-load_db_to_dl(input_directory, output_directory)
+    # Convert OHLCs JSON files to Parquet
+    # Path to the directory containing the JSON files
+    input_directory = r'/home/anhcu/Final_ETL_App/etl-app/elt/data/raw/ohlcs'
+    # Path to the directory to save the Parquet files
+    output_directory = r'/home/anhcu/Final_ETL_App/etl-app/elt/data/completed/load_api_ohlcs_to_dl'
+    load_db_to_dl(input_directory, output_directory)

@@ -204,6 +204,6 @@ def process(parquet_file_path):
     # Stop Spark session
     spark.stop()
 
-if __name__ == "__main__":
-    parquet_file_path = sys.argv[1]
+def transform_to_datawarehouse_3(parquet_file_path):
+    # parquet_file_path = sys.argv[1]
     process(parquet_file_path)

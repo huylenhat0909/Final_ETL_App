@@ -59,7 +59,7 @@ def insert_data_from_json(file_path, table_name, columns, conflict_columns):
     conn.close()
     print(f"Inserted data into {table_name}")
 
-if __name__ == "__main__":
+def load_json_to_db_2():
     # Define directory and table information
     directory = '/home/anhcu/Final_ETL_App/etl-app/backend/data/processed/transformed_to_database_exchanges'
     table_name = 'exchanges'

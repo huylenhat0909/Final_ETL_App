@@ -65,8 +65,8 @@ def process(parquet_file_path):
 
     print("Data has been successfully inserted into dim_companies in DuckDB!")
 
-if __name__ == "__main__":
-    # Get the Parquet file path from command-line arguments
-    parquet_file_path = sys.argv[1]
-    # Process the Parquet file and insert data into DuckDB
+def transform_to_datawarehouse_1(parquet_file_path):
+    # # Get the Parquet file path from command-line arguments
+    # parquet_file_path = sys.argv[1]
+    # # Process the Parquet file and insert data into DuckDB
     process(parquet_file_path)

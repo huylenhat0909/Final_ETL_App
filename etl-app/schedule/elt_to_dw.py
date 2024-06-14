@@ -1,5 +1,4 @@
 from airflow import DAG
-from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from airflow.sensors.external_task_sensor import ExternalTaskSensor
 from airflow.utils.dates import days_ago
@@ -7,12 +6,19 @@ from datetime import timedelta
 import sys
 import subprocess
 import logging
+import os
 
 # Add the paths to sys.path
+sys.path.append('/home/anhcu/Final_ETL_App/etl-app/elt/scripts/extract')
+sys.path.append('/home/anhcu/Final_ETL_App/etl-app/elt/scripts/load')
 sys.path.append('/home/anhcu/Final_ETL_App/etl-app/elt/scripts/transform')
-import transform_to_datawarehouse_1
-import transform_to_datawarehouse_2
-import transform_to_datawarehouse_3
+from crawl_news import crawl_news
+from crawl_ohlcs import crawl_ohlcs
+from load_api_to_parquet import load_api_to_parquet
+from load_db_to_parquet import load_db_to_parquet
+from transform_to_datawarehouse_1 import transform_to_datawarehouse_1
+from transform_to_datawarehouse_2 import transform_to_datawarehouse_2
+from transform_to_datawarehouse_3 import transform_to_datawarehouse_3
 
 default_args = {
     'owner': 'airflow',
@@ -31,28 +37,29 @@ with DAG(
     start_date=days_ago(1),
     catchup=False,
 ) as dag:
-    crawl_news = BashOperator(
+    crawl_news = PythonOperator(
         task_id='crawl_news',
-        bash_command='/bin/python3 /home/anhcu/Final_ETL_App/etl-app/elt/scripts/extract/crawl_news.py',
+        python_callable=crawl_news,
     )
 
-    crawl_ohlcs = BashOperator(
+    crawl_ohlcs = PythonOperator(
         task_id='crawl_ohlcs',
-        bash_command='/bin/python3 /home/anhcu/Final_ETL_App/etl-app/elt/scripts/extract/crawl_ohlcs.py',
+        python_callable=crawl_ohlcs,
     )
 
-    load_api_to_parquet = BashOperator(
+    load_api_to_parquet = PythonOperator(
         task_id='load_api_to_parquet',
-        bash_command='/bin/python3 /home/anhcu/Final_ETL_App/etl-app/elt/scripts/load/load_api_to_parquet.py',
+        python_callable=load_api_to_parquet,
     )
 
-    load_db_to_parquet = BashOperator(
+    load_db_to_parquet = PythonOperator(
         task_id='load_db_to_parquet',
-        bash_command='/bin/python3 /home/anhcu/Final_ETL_App/etl-app/elt/scripts/load/load_db_to_parquet.py',
+        python_callable=load_db_to_parquet,
     )
 
     def run_shell_script():
-        result = subprocess.run(['bash', '/home/anhcu/Final_ETL_App/etl-app/elt/scripts/load/load_parquet_to_hdfs.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        os.environ['PATH'] = '/bin:/usr/bin:' + os.environ['PATH']
+        result = subprocess.run(['/bin/bash', '/home/anhcu/Final_ETL_App/etl-app/elt/scripts/load/load_parquet_to_hdfs.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.returncode != 0:
             raise Exception(f"Shell script failed with error: {result.stderr.decode()}")
         output = result.stdout.decode()
@@ -64,12 +71,6 @@ with DAG(
         python_callable=run_shell_script,
         do_xcom_push=True
     )
-
-    # load_parquet_to_hdfs = BashOperator(
-    #     task_id='load_parquet_to_hdfs',
-    #     bash_command='bash /home/anhcu/Final_ETL_App/etl-app/elt/scripts/load/load_parquet_to_hdfs.sh',
-    #     do_xcom_push=True,  # Sử dụng do_xcom_push để đẩy kết quả lên XCom
-    # )
 
     def process_latest_files(**kwargs):
         ti = kwargs['ti']
@@ -92,13 +93,13 @@ with DAG(
                 process_news(file_path)
 
     def process_companies(hdfs_path):
-        transform_to_datawarehouse_1.process(hdfs_path)
+        transform_to_datawarehouse_1(hdfs_path)
 
     def process_ohlcs(hdfs_path):
-        transform_to_datawarehouse_2.process(hdfs_path)
+        transform_to_datawarehouse_2(hdfs_path)
 
     def process_news(hdfs_path):
-        transform_to_datawarehouse_3.process(hdfs_path)
+        transform_to_datawarehouse_3(hdfs_path)
 
     process_files = PythonOperator(
         task_id='process_latest_files',

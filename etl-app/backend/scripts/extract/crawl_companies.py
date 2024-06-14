@@ -2,31 +2,32 @@ import requests
 import json
 import datetime
 
-# API token for SEC API
-API_TOKEN = "915ea604126681297ae79e0ebcee606ebce85f25b20a6d694f27fe067dc7f926"
+def crawl_companies():
+    # API token for SEC API
+    API_TOKEN = "915ea604126681297ae79e0ebcee606ebce85f25b20a6d694f27fe067dc7f926"
 
-# List of stock exchanges to extract data from
-exchanges = ["nasdaq", "nyse"]
+    # List of stock exchanges to extract data from
+    exchanges = ["nasdaq", "nyse"]
 
-# Initialize an empty list to hold company data
-list_companies = []
+    # Initialize an empty list to hold company data
+    list_companies = []
 
-# Iterate over each exchange and fetch company data
-for exchange in exchanges:
-    url = f'https://api.sec-api.io/mapping/exchange/{exchange}?token={API_TOKEN}'
-    response = requests.get(url)
-    data = response.json()
-    list_companies.extend(data)
-    print(f"Extracted {len(data)} companies from the {exchange.upper()} stock exchange.")
+    # Iterate over each exchange and fetch company data
+    for exchange in exchanges:
+        url = f'https://api.sec-api.io/mapping/exchange/{exchange}?token={API_TOKEN}'
+        response = requests.get(url)
+        data = response.json()
+        list_companies.extend(data)
+        print(f"Extracted {len(data)} companies from the {exchange.upper()} stock exchange.")
 
-# Get the current date for filename
-date = datetime.date.today().strftime("%Y_%m_%d")
-path = f"/home/anhcu/Final_ETL_App/etl-app/backend/data/raw/companies/crawl_companies_{date}.json"
+    # Get the current date for filename
+    date = datetime.date.today().strftime("%Y_%m_%d")
+    path = f"/home/anhcu/Final_ETL_App/etl-app/backend/data/raw/companies/crawl_companies_{date}.json"
 
-# Serialize the list of companies to JSON
-json_object = json.dumps(list_companies, indent=4)
+    # Serialize the list of companies to JSON
+    json_object = json.dumps(list_companies, indent=4)
 
-# Write the JSON data to a file
-with open(path, "w") as outfile:
-    outfile.write(json_object)
-print(f"Data saved to {path}")
+    # Write the JSON data to a file
+    with open(path, "w") as outfile:
+        outfile.write(json_object)
+    print(f"Data saved to {path}")
