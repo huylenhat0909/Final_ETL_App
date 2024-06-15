@@ -62,3 +62,5 @@ def crawl_news():
     # Print success message with total news items and file path
     print(f"The process of crawling {total} news was successful")
     print(f"Saving at {path}")
+
+crawl_news()

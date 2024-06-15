@@ -4,24 +4,6 @@ import duckdb
 # Create a new Flask application
 app = Flask(__name__)
 
-# # Define an endpoint to retrieve data from the 'dim_time' table
-# @app.route('/dim_time', methods=['GET'])
-# def get_dim_time():
-#     # Connect to the DuckDB database
-#     duck_conn = duckdb.connect('/home/anhcu/Final_ETL_App/etl-app/datawarehouse.duckdb')
-#     # SQL query to select all data from the 'dim_time' table
-#     query = 'SELECT * FROM dim_time'
-#     # Execute the query and fetch all results
-#     result = duck_conn.execute(query).fetchall()
-#     # Get the column names from the query result
-#     columns = [desc[0] for desc in duck_conn.description]
-#     # Combine column names and row data into a list of dictionaries
-#     data = [dict(zip(columns, row)) for row in result]
-#     # Close the database connection
-#     duck_conn.close()
-#     # Return the data as a JSON response
-#     return jsonify(data)
-
 # Define an endpoint to retrieve data from the 'dim_companies' table
 @app.route('/dim_companies', methods=['GET'])
 def get_dim_companies():
@@ -70,8 +52,8 @@ def get_dim_news():
     duck_conn = duckdb.connect('/home/anhcu/Final_ETL_App/etl-app/datawarehouse.duckdb')
     # SQL query to select specific columns from the 'dim_news' table
     query = '''
-                SELECT new_id, new_title, new_url, new_time_published, new_authors, new_source, 
-                        new_overall_sentiment_score, new_overall_sentiment_label, news_time_id
+                SELECT new_id, new_title, new_url, new_time_published, 
+                        new_overall_sentiment_score, new_overall_sentiment_label
                 FROM dim_news
             '''
     # Execute the query and fetch all results

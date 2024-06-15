@@ -117,8 +117,11 @@ def process(parquet_file_path):
     # Stop Spark session
     spark.stop()
 
-def transform_to_datawarehouse_2(parquet_file_path):
-    # # Get the Parquet file path from command-line arguments
-    # parquet_file_path = sys.argv[1]
-    # # Process the Parquet file and insert data into DuckDB
+def transform_to_datawarehouse_2():
+    # Get the Parquet file path from command-line arguments
+    parquet_file_path = sys.argv[1]
+    # Process the Parquet file and insert data into DuckDB
     process(parquet_file_path)
+
+transform_to_datawarehouse_2()
+# /user/anhcu/datalake/ohlcs/crawl_ohlcs_2024_06_14.parquet

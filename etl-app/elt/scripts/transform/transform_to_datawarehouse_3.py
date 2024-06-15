@@ -204,6 +204,10 @@ def process(parquet_file_path):
     # Stop Spark session
     spark.stop()
 
-def transform_to_datawarehouse_3(parquet_file_path):
+def transform_to_datawarehouse_3():
     # parquet_file_path = sys.argv[1]
+    parquet_file_path = "/user/anhcu/datalake/news/crawl_news_2024_06_14.parquet"
     process(parquet_file_path)
+    
+transform_to_datawarehouse_3()
+# /user/anhcu/datalake/news/crawl_news_2024_06_14.parquet

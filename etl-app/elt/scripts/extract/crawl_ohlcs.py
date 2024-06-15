@@ -38,3 +38,5 @@ def crawl_ohlcs():
     # Print success message with total OHLCs and file path
     print(f"The process of crawling {len(data)} OHLCs was successful")
     print(f"Saving at {path}")
+
+crawl_ohlcs()
