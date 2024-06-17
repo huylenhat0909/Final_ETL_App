@@ -92,3 +92,5 @@ def load_json_to_db_1():
         ['sic_id', 'sic_industry', 'sic_sector'],
         ['sic_industry', 'sic_sector']
     )
+    
+# load_json_to_db_1()

@@ -1,11 +1,9 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.sensors.external_task_sensor import ExternalTaskSensor
 from airflow.utils.dates import days_ago
 from datetime import timedelta
 import sys
 import subprocess
-import logging
 import os
 
 # Add the paths to sys.path
@@ -29,6 +27,12 @@ default_args = {
     'retry_delay': timedelta(minutes=1),
 }
 
+def run_shell_script():
+    os.environ['PATH'] = '/bin:/usr/bin:' + os.environ['PATH']
+    result = subprocess.run(['/bin/bash', '/home/anhcu/Final_ETL_App/etl-app/elt/scripts/load/load_parquet_to_hdfs.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if result.returncode != 0:
+        raise Exception(f"Shell script failed with error: {result.stderr.decode()}")
+
 with DAG(
     dag_id='ELT_to_Data_Warehouse',
     default_args=default_args,
@@ -37,57 +41,50 @@ with DAG(
     start_date=days_ago(1),
     catchup=False,
 ) as dag:
-    crawl_news = PythonOperator(
+    crawl_news_task = PythonOperator(
         task_id='crawl_news',
         python_callable=crawl_news,
     )
 
-    crawl_ohlcs = PythonOperator(
+    crawl_ohlcs_task = PythonOperator(
         task_id='crawl_ohlcs',
         python_callable=crawl_ohlcs,
     )
 
-    load_api_to_parquet = PythonOperator(
+    load_api_to_parquet_task = PythonOperator(
         task_id='load_api_to_parquet',
         python_callable=load_api_to_parquet,
     )
 
-    load_db_to_parquet = PythonOperator(
+    load_db_to_parquet_task = PythonOperator(
         task_id='load_db_to_parquet',
         python_callable=load_db_to_parquet,
     )
 
-    def run_shell_script():
-        os.environ['PATH'] = '/bin:/usr/bin:' + os.environ['PATH']
-        result = subprocess.run(['/bin/bash', '/home/anhcu/Final_ETL_App/etl-app/elt/scripts/load/load_parquet_to_hdfs.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if result.returncode != 0:
-            raise Exception(f"Shell script failed with error: {result.stderr.decode()}")
-        
-    load_parquet_to_hdfs = PythonOperator(
+    load_parquet_to_hdfs_task = PythonOperator(
         task_id='load_parquet_to_hdfs',
         python_callable=run_shell_script
     )
 
-    process_companies = PythonOperator(
+    process_companies_task = PythonOperator(
         task_id='process_companies',
         python_callable=transform_to_datawarehouse_1,
     )
     
-    process_ohlcs = PythonOperator(
+    process_ohlcs_task = PythonOperator(
         task_id='process_ohlcs',
         python_callable=transform_to_datawarehouse_2,
     )
     
-    process_news = PythonOperator(
+    process_news_task = PythonOperator(
         task_id='process_news',
         python_callable=transform_to_datawarehouse_3,
     )
 
     # Định nghĩa thứ tự chạy các task
-    crawl_news >> load_api_to_parquet
-    crawl_ohlcs >> load_api_to_parquet
-    crawl_news >> load_db_to_parquet
-    crawl_ohlcs >> load_db_to_parquet
-    load_api_to_parquet >> load_parquet_to_hdfs
-    load_db_to_parquet >> load_parquet_to_hdfs
-    load_parquet_to_hdfs >> process_companies >> process_ohlcs >> process_news
+    crawl_news_task >> load_api_to_parquet_task
+    crawl_ohlcs_task >> load_api_to_parquet_task
+    crawl_news_task >> load_db_to_parquet_task
+    crawl_ohlcs_task >> load_db_to_parquet_task
+    [load_api_to_parquet_task, load_db_to_parquet_task] >> load_parquet_to_hdfs_task
+    load_parquet_to_hdfs_task >> process_companies_task >> process_ohlcs_task >> process_news_task

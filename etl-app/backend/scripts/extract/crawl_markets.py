@@ -26,3 +26,5 @@ def crawl_markets():
     # Print completion messages
     print(f"Extracted {len(data)} regions and exchanges.")
     print(f"Data saved to {path}")
+
+# crawl_markets()

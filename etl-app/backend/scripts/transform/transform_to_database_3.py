@@ -150,3 +150,5 @@ def transform_to_database_3():
     # Save the final companies DataFrame to a JSON file
     path = f"/home/anhcu/Final_ETL_App/etl-app/backend/data/processed/transformed_to_database_companies/process_companies_{date}.json"
     save_to_json(companies, path)
+    
+# transform_to_database_3()

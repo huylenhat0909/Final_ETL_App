@@ -78,3 +78,5 @@ def load_json_to_db_3():
     
     # Insert data from the JSON file into the PostgreSQL table
     insert_data_from_json(latest_file, table_name, columns, conflict_columns)
+
+# load_json_to_db_3()

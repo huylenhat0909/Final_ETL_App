@@ -98,3 +98,5 @@ def transform_to_database_1():
     ]))
     sicindustries_path = f"/home/anhcu/Final_ETL_App/etl-app/backend/data/processed/transformed_to_database_sicindustries/process_sicindustries_{date}.json"
     save_to_json(sicindustries, sicindustries_path)
+    
+# transform_to_database_1()

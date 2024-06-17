@@ -1,7 +1,7 @@
 import duckdb
 
 # Kết nối với database
-con = duckdb.connect(database='/home/anhcu/Final_ETL_App/etl-app/datawarehouse1.duckdb')
+con = duckdb.connect(database='/home/anhcu/Final_ETL_App/etl-app/datawarehouse.duckdb')
 
 con.sql("Select * from dim_time;").show()
 con.sql("Select * from dim_topics;").show()

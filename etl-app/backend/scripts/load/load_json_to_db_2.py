@@ -74,3 +74,5 @@ def load_json_to_db_2():
         insert_data_from_json(latest_file, table_name, columns, conflict_columns)
     else:
         print("No file found to insert data.")
+
+# load_json_to_db_2()

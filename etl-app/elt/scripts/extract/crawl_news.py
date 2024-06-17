@@ -63,4 +63,4 @@ def crawl_news():
     print(f"The process of crawling {total} news was successful")
     print(f"Saving at {path}")
 
-crawl_news()
+# crawl_news()

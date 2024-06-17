@@ -111,3 +111,5 @@ def transform_to_database_2():
     # Save transformed exchanges data to JSON
     path = f"/home/anhcu/Final_ETL_App/etl-app/backend/data/processed/transformed_to_database_exchanges/process_exchanges_{date}.json"
     save_to_json(exchanges, path)
+    
+# transform_to_database_2()

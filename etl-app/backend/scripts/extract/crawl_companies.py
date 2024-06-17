@@ -31,3 +31,5 @@ def crawl_companies():
     with open(path, "w") as outfile:
         outfile.write(json_object)
     print(f"Data saved to {path}")
+    
+# crawl_companies()
