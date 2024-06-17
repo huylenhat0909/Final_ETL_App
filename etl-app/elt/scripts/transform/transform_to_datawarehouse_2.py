@@ -1,10 +1,56 @@
 import sys
 import duckdb
-import pandas as pd
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import input_file_name, lit
 from datetime import datetime, timedelta
+import pyarrow as pa
+import pyarrow.parquet as pq
+import pyarrow.fs as fs
+from urllib.parse import urlparse
+
+def get_latest_parquet_file(hdfs_directory):
+    # Initialize Spark session
+    spark = SparkSession.builder \
+        .appName("Get Latest Parquet File") \
+        .getOrCreate()
+
+    # List all files in the directory
+    files_df = spark.read.format("binaryFile").load(hdfs_directory + "/*.parquet")
+
+    # Extract file names and modification times
+    files_df = files_df.withColumn("file_name", input_file_name())
+
+    # Order files by modification time descending and get the latest file
+    latest_file = files_df.orderBy("modificationTime", ascending=False).limit(1).collect()[0].file_name
+
+    print(latest_file)
+    # Stop Spark session
+    spark.stop()
+
+    return latest_file
+
+def is_parquet_file_empty(hdfs_url, threshold_size=1000):
+    # Extract the HDFS path from the URL
+    hdfs_path = urlparse((hdfs_url)).path
+    
+    # Create an HDFS client
+    hdfs = fs.HadoopFileSystem('0.0.0.0', port=9000, user='anhcu')
+    
+    # Get the file status
+    file_info = hdfs.get_file_info(hdfs_path)
+    
+    # Get the file size
+    file_size = file_info.size
+    
+    # Check if the file size is greater than the threshold
+    return file_size > threshold_size
 
 def process(parquet_file_path):
+    # Check if the Parquet file is empty
+    if not is_parquet_file_empty(parquet_file_path):
+        print("Tệp Parquet rỗng.")
+        return
+
     # Create SparkSession
     spark = SparkSession.builder \
         .appName("Insert Parquet into DuckDB (dim_times, fact_candles)") \
@@ -30,10 +76,9 @@ def process(parquet_file_path):
     df_spark.printSchema()
     df_spark.show()
     
-    # Convert Spark DataFrame to Pandas DataFrame
-    df_pandas = df_spark.toPandas()
-    print(df_pandas)
-    
+    # Convert PySpark DataFrame to Arrow Table
+    arrow_table = pa.Table.from_pandas(df_spark.toPandas())
+
     # Get yesterday's date
     yesterday = datetime.now().date() - timedelta(days=1)
     print(f"Yesterday's date: {yesterday}")
@@ -71,17 +116,27 @@ def process(parquet_file_path):
     companies_df = id_company_df.drop_duplicates(subset=['company_ticket'], keep='last')
     print(companies_df)
     
-    # Join companies_df to df_pandas to get corresponding company_id
-    df_pandas = df_pandas.merge(companies_df, on='company_ticket', how='left')
-    df_pandas = df_pandas[df_pandas['company_id'].notnull()]
-    print(df_pandas)
+    # Convert companies_df to PySpark DataFrame
+    companies_spark_df = spark.createDataFrame(companies_df)
+    
+    # Join companies_spark_df to df_spark to get corresponding company_id
+    df_spark = df_spark.join(companies_spark_df, on='company_ticket', how='left')
+    df_spark = df_spark.filter(df_spark['company_id'].isNotNull())
+    print(df_spark.show())
     
     # Add candles_time_id to DataFrame
-    df_pandas['candles_time_id'] = id_time_df['time_id'][0]
-    print(df_pandas)
+    candles_time_id = id_time_df['time_id'][0]
+    df_spark = df_spark.withColumn('candles_time_id', lit(candles_time_id))
+
+    print(df_spark.show())
+    
+    # Convert PySpark DataFrame to Arrow Table
+    arrow_table = pa.Table.from_pandas(df_spark.toPandas())
+    
+    # Register the Arrow Table in DuckDB
+    conn.register("arrow_table", arrow_table)
     
     # Load DataFrame into fact_candles table
-    conn.register('df_pandas', df_pandas)
     conn.execute('''
         INSERT INTO fact_candles (
             candle_volume,
@@ -95,7 +150,7 @@ def process(parquet_file_path):
             candle_is_otc,
             candles_time_id,
             candle_company_id
-        ) SELECT 
+        ) SELECT
             volume,
             volume_weighted,
             open,
@@ -107,7 +162,7 @@ def process(parquet_file_path):
             is_otc,
             candles_time_id,
             company_id
-        FROM df_pandas
+        FROM arrow_table
     ''')
     print("Data inserted into fact_candles successfully!")
     
@@ -118,10 +173,9 @@ def process(parquet_file_path):
     spark.stop()
 
 def transform_to_datawarehouse_2():
-    # Get the Parquet file path from command-line arguments
-    parquet_file_path = sys.argv[1]
+    hdfs_directory = "/user/anhcu/datalake/ohlcs/"
+    parquet_file_path = get_latest_parquet_file(hdfs_directory)
     # Process the Parquet file and insert data into DuckDB
     process(parquet_file_path)
 
 transform_to_datawarehouse_2()
-# /user/anhcu/datalake/ohlcs/crawl_ohlcs_2024_06_14.parquet

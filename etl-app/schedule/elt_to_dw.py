@@ -62,49 +62,25 @@ with DAG(
         result = subprocess.run(['/bin/bash', '/home/anhcu/Final_ETL_App/etl-app/elt/scripts/load/load_parquet_to_hdfs.sh'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.returncode != 0:
             raise Exception(f"Shell script failed with error: {result.stderr.decode()}")
-        output = result.stdout.decode()
-        print(output)
-        return output
         
     load_parquet_to_hdfs = PythonOperator(
         task_id='load_parquet_to_hdfs',
-        python_callable=run_shell_script,
-        do_xcom_push=True
+        python_callable=run_shell_script
     )
 
-    def process_latest_files(**kwargs):
-        ti = kwargs['ti']
-        latest_files = ti.xcom_pull(task_ids='load_parquet_to_hdfs')
-        
-        if latest_files is None:
-            logging.error("No files were pulled from XCom. Check the 'load_parquet_to_hdfs' task.")
-            raise ValueError("No files were pulled from XCom. Check the 'load_parquet_to_hdfs' task.")
-        
-        logging.info(f"Files pulled from XCom: {latest_files}")
-
-        file_list = latest_files.strip().split('\n')
-                
-        for file_path in file_list:
-            if "datalake/companies" in file_path:
-                process_companies(file_path)
-            elif "datalake/ohlcs" in file_path:
-                process_ohlcs(file_path)
-            elif "datalake/news" in file_path:
-                process_news(file_path)
-
-    def process_companies(hdfs_path):
-        transform_to_datawarehouse_1(hdfs_path)
-
-    def process_ohlcs(hdfs_path):
-        transform_to_datawarehouse_2(hdfs_path)
-
-    def process_news(hdfs_path):
-        transform_to_datawarehouse_3(hdfs_path)
-
-    process_files = PythonOperator(
-        task_id='process_latest_files',
-        python_callable=process_latest_files,
-        provide_context=True,
+    process_companies = PythonOperator(
+        task_id='process_companies',
+        python_callable=transform_to_datawarehouse_1,
+    )
+    
+    process_ohlcs = PythonOperator(
+        task_id='process_ohlcs',
+        python_callable=transform_to_datawarehouse_2,
+    )
+    
+    process_news = PythonOperator(
+        task_id='process_news',
+        python_callable=transform_to_datawarehouse_3,
     )
 
     # Định nghĩa thứ tự chạy các task
@@ -114,4 +90,4 @@ with DAG(
     crawl_ohlcs >> load_db_to_parquet
     load_api_to_parquet >> load_parquet_to_hdfs
     load_db_to_parquet >> load_parquet_to_hdfs
-    load_parquet_to_hdfs >> process_files
+    load_parquet_to_hdfs >> process_companies >> process_ohlcs >> process_news

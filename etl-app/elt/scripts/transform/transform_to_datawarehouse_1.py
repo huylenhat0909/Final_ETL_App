@@ -1,7 +1,29 @@
 import sys
 import duckdb
-import pandas as pd
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import input_file_name
+import pyarrow as pa
+
+def get_latest_parquet_file(hdfs_directory):
+    # Initialize Spark session
+    spark = SparkSession.builder \
+        .appName("Get Latest Parquet File") \
+        .getOrCreate()
+
+    # List all files in the directory
+    files_df = spark.read.format("binaryFile").load(hdfs_directory + "/*.parquet")
+
+    # Extract file names and modification times
+    files_df = files_df.withColumn("file_name", input_file_name())
+
+    # Order files by modification time descending and get the latest file
+    latest_file = files_df.orderBy("modificationTime", ascending=False).limit(1).collect()[0].file_name
+
+    print(latest_file)
+    # Stop Spark session
+    spark.stop()
+
+    return latest_file
 
 def process(parquet_file_path):
     # Initialize Spark session
@@ -16,8 +38,8 @@ def process(parquet_file_path):
     df_spark.printSchema()
     df_spark.show()
 
-    # Convert PySpark DataFrame to Pandas DataFrame
-    df_pandas = df_spark.toPandas()
+    # Convert PySpark DataFrame to Arrow Table
+    arrow_table = pa.Table.from_pandas(df_spark.toPandas())
 
     # Path to DuckDB database file
     database_path = '/home/anhcu/Final_ETL_App/etl-app/datawarehouse.duckdb'
@@ -25,8 +47,10 @@ def process(parquet_file_path):
     # Connect to DuckDB
     conn = duckdb.connect(database=database_path)
 
-    # Register the Pandas DataFrame as a DuckDB table and insert data into dim_companies
-    conn.register('df_pandas', df_pandas)
+    # Register the Arrow Table in DuckDB
+    conn.register("arrow_table", arrow_table)
+
+    # Insert data from Arrow Table into DuckDB table
     conn.execute('''
         INSERT INTO dim_companies (
             company_name,
@@ -54,7 +78,7 @@ def process(parquet_file_path):
             company_industry_sector,
             company_sic_industry,
             company_sic_sector
-        FROM df_pandas
+        FROM arrow_table
     ''')
 
     # Close DuckDB connection
@@ -66,10 +90,8 @@ def process(parquet_file_path):
     print("Data has been successfully inserted into dim_companies in DuckDB!")
 
 def transform_to_datawarehouse_1():
-    # Get the Parquet file path from command-line arguments
-    parquet_file_path = sys.argv[1]
-    # Process the Parquet file and insert data into DuckDB
+    hdfs_directory = "/user/anhcu/datalake/companies/"
+    parquet_file_path = get_latest_parquet_file(hdfs_directory)
     process(parquet_file_path)
 
 transform_to_datawarehouse_1()
-# /user/anhcu/datalake/companies/load_db_to_dl_2024_06_.parquet
