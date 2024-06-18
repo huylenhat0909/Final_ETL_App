@@ -1,55 +1,17 @@
 # Table Change Log
 
-Created: June 17, 2024 1:09 PM
+| Version | Date       | Description |
+|---------|------------|-------------|
+| 1.1.0   | 10/05/2024 | - Revised entire documentation content<br> - Conducted analysis based on specific questions:<br>   ◦ Identified data returned from Query API<br>   ◦ Determined Query API response time<br>   ◦ Assessed data volume and scope<br>   ◦ Defined problems to be addressed<br>   ◦ Identified data required for problem-solving<br> - Removed Data Staging and ERD model design for staging database<br> - Designed ELT model with Data Lake and Data Mart |
+| 1.2.0   | 13/05/2024 | - Edited documentation focusing on NYSE and NASDAQ data<br>   ◦ Updated data volume based on scope<br> - Split 4 APIs into 2 APIs and 1 Database storing data from sec-api.io and Alpha Vantage API for market status (simulated backend database)<br>   ◦ Designed Database for data from sec-api.io and Alpha Vantage API for market status<br> - Redesigned ELT to include new Database as a Data Source<br> - Modified Galaxy Schema<br>   ◦ Optimized query time with a single Dim Companies table |
+| 1.2.1   | 16/05/2024 | - Identified ETL components<br> - Added design elements:<br>   ◦ Designed DAG and Task Flow<br>   ◦ Designed Job Data Flow<br>   ◦ Created BPMN ETL<br>   ◦ Structured File System |
+| 1.2.2   | 28/05/2024 | - Migrated Data Warehouse to DuckDB<br> - Updated ETL process:<br>   ◦ Database -> Data Lake -> Data Warehouse<br>   ◦ Implemented timestamp for database updates |
+| 1.3     | 03/06/2024 | - Configured project environment<br> - Installed and configured Google Compute Engine<br> - Installed and configured Hadoop (Single Node) - HDFS, YARN<br> - Installed and configured Python, PostgreSQL, DuckDB<br> - Installed and configured Spark on Hadoop cluster |
+| 1.6     | 07/06/2024 | - Initialized functionality:<br>   ◦ ETL for Database<br>   ◦ ELT for Data Warehouse<br>   ◦ Created DAGs<br>   ◦ Developed API for Data Warehouse access |
+| 1.7     | 14/06/2024 | - Launched project:<br>   ◦ Started Airflow<br>   ◦ Activated API |
+| 1.8 (Processing) | 15/06/2024 | - Designed Dashboard:<br>   ◦ Identified and designed Dashboard<br>   ◦ Extracted data via API<br>   ◦ Loaded data into Power BI<br>   ◦ Created Dashboard |
+| 1.9 (Upcoming)   |            |             |
 
-| Version | Date | Description |
-| --- | --- | --- |
-| 1.1.0 | 10/05/2024 | • Sửa đổi toàn bộ nội dung doc
-• Tiến hành phân tích dựa trên các câu hỏi
-    ◦ Xác định dữ liệu trả về từ Query API
-    ◦ Xác định thời gian Query API
-    ◦ Xác định khối lượng dữ liệu trả về và phạm vi dữ liệu
-    ◦ Xác định các bài toán đặt ra
-    ◦ Xác định dữ liệu cần trích xuất để xử lý bài toán
-• Loại bỏ Data Staging và mô hình ERD thiết kế cho CSDL trong staging
-• Thiết kế mô hình ELT với Data Lake và Data Mart |
-| 1.2.0 | 13/05/2024 | • Chỉnh sửa doc tập trung vào data của NYSE và NASDAQ
-    ◦ Cập nhật khối lượng dữ liệu dựa trên phạm vi dữ liệu
-• Tách 4 API thành 2 API và 1 Database lưu dữ liệu từ sec-api.io và Alpha Vantage API for market status (giả lập backend database)
-    ◦ Thiết kế Database cho dữ liệu từ sec-api.io và Alpha Vantage API for market status
-• Thiết kế lại ELT bổ sung Database mới làm Data Source
-• Chỉnh sửa Galaxy Schema
-    ◦ Chỉ 1 bảng Dim Companies để tối ưu thời gian truy vấn |
-| 1.2.1 | 16/05/2024 | • Xác định các thành phần trong ETL
-• Bổ sung thiết kế
-    ◦ Thiết kế DAG và Task Flow
-    ◦ Thiết kế Job Data Flow
-    ◦ BPMN ETL
-    ◦ File System |
-| 1.2.2 | 28/05/2024 | • Chuyển đổi DW sang DuckDB
-• Cập nhật ETL
-    ◦ Database -> Data lake -> Data Warehouse
-    ◦ Sử dụng timestamp khi cập nhật Database |
-| 1.3 | 03/06/2024 | Cấu hình môi trường dự án
-• Cài đặt, cấu hình Google Compute Engine
-• Cài đặt, cấu hình Hadoop (Single Node) - HDFS, YARN
-• Cài đặt, cấu hình Python, PostgreSQL, DuckDB
-• Cài đặt, cấu hình Spark trên cụm Hadoop |
-| 1.6
- | 7/06/2024 | Khởi tạo chức năng
-• ETL cho Database
-• ELT cho Data Warehouse
-• Tạo các Dag
-• Tạo API truy cập Data Warrehouse |
-| 1.7  | 14/06/2024 | Khởi chạy dự án
-• Khởi chạy Airflow 
-• Khởi chạy API |
-| 1.8 (Processing) | 15/06/2024 | Thiết kế Dashboard
-• Xác định & Thiết kế Dashboard
-• Lấy dữ liệu thông qua API
-• Tải dữ liệu vào Power BI
-• Tạo Dashboard |
-| 1.9 (Upcoming) |  |  |
 
-# Link Tài liệu: 
+# Docs Link: 
 https://anhcuonghuynhnguyen.notion.site/T-i-li-u-d-n-ELT_Pipeline_Stock-v1-8-4f4289c245a647f6a2879ca171ee5b2b?pvs=4 
