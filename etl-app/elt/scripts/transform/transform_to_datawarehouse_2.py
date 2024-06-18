@@ -177,3 +177,5 @@ def transform_to_datawarehouse_2():
     parquet_file_path = get_latest_parquet_file(hdfs_directory)
     # Process the Parquet file and insert data into DuckDB
     process(parquet_file_path)
+
+# transform_to_datawarehouse_2()
