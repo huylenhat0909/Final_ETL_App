@@ -29,7 +29,7 @@ def get_latest_parquet_file(hdfs_directory):
 
     return latest_file
 
-def is_parquet_file_empty(hdfs_url, threshold_size=1000):
+def is_parquet_file_empty(hdfs_url, threshold_size=2000):
     # Extract the HDFS path from the URL
     hdfs_path = urlparse((hdfs_url)).path
     

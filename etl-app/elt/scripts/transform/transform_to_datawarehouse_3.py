@@ -81,6 +81,7 @@ def process(parquet_file_path):
     id_time_df = conn.execute(f'''
         SELECT time_id FROM dim_time WHERE date = '{yesterday}'
     ''').fetchdf()
+        
     news_time_id = id_time_df['time_id'][0]
 
     # Step 3: Create DataFrame for dim_news
