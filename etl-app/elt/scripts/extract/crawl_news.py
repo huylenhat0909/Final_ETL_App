@@ -9,12 +9,12 @@ def get_data_by_time_range(time_zone):
     yesterday = (datetime.date.today() - datetime.timedelta(days=1))
     if time_zone == 1:
         time_from = yesterday.strftime("%Y%m%dT"+"0000")
-        time_to = yesterday.strftime("%Y%m%dT"+"0929")
+        time_to = yesterday.strftime("%Y%m%dT"+"2359")
     elif time_zone == 2:
-        time_from = yesterday.strftime("%Y%m%dT"+"0930")
-        time_to = yesterday.strftime("%Y%m%dT"+"1600")
+        time_from = yesterday.strftime("%Y%m%dT"+"0000")
+        time_to = yesterday.strftime("%Y%m%dT"+"1200")
     else:
-        time_from = yesterday.strftime("%Y%m%dT"+"1601")
+        time_from = yesterday.strftime("%Y%m%dT"+"1201")
         time_to = yesterday.strftime("%Y%m%dT"+"2359")
     return time_from, time_to
 
@@ -36,15 +36,22 @@ def crawl_news():
         
         # Make a GET request to the API
         r = requests.get(url)
-        
+                
         # Parse the response JSON
         data = r.json()["feed"]
+                
+        # Increment the total count of news items
+        total += len(data)
+        
+        if total == 1000 and time_zone == 1:
+            continue
         
         # Append the data to the json_object list
         json_object += data
         
-        # Increment the total count of news items
-        total += len(data)
+        if total < 1000 and time_zone == 1:
+            break
+        
 
     # Serialize the JSON object to a formatted string
     json_object = json.dumps(json_object, indent=4)
@@ -63,4 +70,4 @@ def crawl_news():
     print(f"The process of crawling {total} news was successful")
     print(f"Saving at {path}")
 
-# crawl_news()
+crawl_news()

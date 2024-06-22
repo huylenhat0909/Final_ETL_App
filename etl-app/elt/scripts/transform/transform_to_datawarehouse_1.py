@@ -94,4 +94,4 @@ def transform_to_datawarehouse_1():
     parquet_file_path = get_latest_parquet_file(hdfs_directory)
     process(parquet_file_path)
     
-# transform_to_datawarehouse_1()
+transform_to_datawarehouse_1()

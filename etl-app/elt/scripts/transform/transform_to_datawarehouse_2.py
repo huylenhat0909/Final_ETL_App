@@ -178,4 +178,4 @@ def transform_to_datawarehouse_2():
     # Process the Parquet file and insert data into DuckDB
     process(parquet_file_path)
 
-# transform_to_datawarehouse_2()
+transform_to_datawarehouse_2()

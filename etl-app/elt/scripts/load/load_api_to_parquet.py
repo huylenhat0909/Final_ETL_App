@@ -66,5 +66,5 @@ def load_api_to_parquet():
     # Path to the directory to save the Parquet files
     output_directory = r'/home/anhcu/Final_ETL_App/etl-app/elt/data/completed/load_api_ohlcs_to_dl'
     load_db_to_dl(input_directory, output_directory)
-    
-# load_api_to_parquet()
+
+load_api_to_parquet()
