@@ -122,21 +122,57 @@ def get_fact_news_topics():
     # Return the data as a JSON response
     return jsonify(data)
 
+# # Define an endpoint to retrieve data from the 'fact_candles' table
+# @app.route('/fact_candles', methods=['GET'])
+# def get_fact_candles():
+#     # Connect to the DuckDB database
+#     duck_conn = duckdb.connect('/home/anhcu/Final_ETL_App/etl-app/datawarehouse.duckdb')
+#     # SQL query to select all data from the 'fact_candles' table
+#     query = 'SELECT * FROM fact_candles;'
+#     # Execute the query and fetch all results
+#     result = duck_conn.execute(query).fetchall()
+#     # Get the column names from the query result
+#     columns = [desc[0] for desc in duck_conn.description]
+#     # Combine column names and row data into a list of dictionaries
+#     data = [dict(zip(columns, row)) for row in result]
+#     # Close the database connection
+#     duck_conn.close()
+#     # Return the data as a JSON response
+#     return jsonify(data)
+
 # Define an endpoint to retrieve data from the 'fact_candles' table
 @app.route('/fact_candles', methods=['GET'])
 def get_fact_candles():
+    # Get the parameter from the request
+    candles_time_id = request.args.get('candles_time_id')
+    
+    if not candles_time_id:
+        return jsonify({'error': 'candles_time_id parameter is required'}), 400
+
+    try:
+        # Convert parameter to integer
+        candles_time_id = int(candles_time_id)
+    except ValueError:
+        return jsonify({'error': 'candles_time_id parameter must be an integer'}), 400
+
     # Connect to the DuckDB database
     duck_conn = duckdb.connect('/home/anhcu/Final_ETL_App/etl-app/datawarehouse.duckdb')
-    # SQL query to select all data from the 'fact_candles' table
-    query = 'SELECT * FROM fact_candles;'
-    # Execute the query and fetch all results
-    result = duck_conn.execute(query).fetchall()
+
+    # SQL query to select data from the 'fact_candles' table with parameterized query
+    query = 'SELECT * FROM fact_candles WHERE candles_time_id = ?;'
+    
+    # Execute the query with the parameter
+    result = duck_conn.execute(query, (candles_time_id,)).fetchall()
+
     # Get the column names from the query result
     columns = [desc[0] for desc in duck_conn.description]
+
     # Combine column names and row data into a list of dictionaries
     data = [dict(zip(columns, row)) for row in result]
+
     # Close the database connection
     duck_conn.close()
+
     # Return the data as a JSON response
     return jsonify(data)
 
