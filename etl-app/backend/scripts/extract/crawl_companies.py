@@ -22,7 +22,7 @@ def crawl_companies():
 
     # Get the current date for filename
     date = datetime.date.today().strftime("%Y_%m_%d")
-    path = f"/home/anhcu/Final_ETL_App/etl-app/backend/data/raw/companies/crawl_companies_{date}.json"
+    path = f"C:/Users/ADMIN/Data Engineer/Final_ETL_App/etl-app/backend/data/raw/companies/crawl_companies_{date}.json"
 
     # Serialize the list of companies to JSON
     json_object = json.dumps(list_companies, indent=4)
@@ -32,4 +32,4 @@ def crawl_companies():
         outfile.write(json_object)
     print(f"Data saved to {path}")
     
-# crawl_companies()
+crawl_companies()

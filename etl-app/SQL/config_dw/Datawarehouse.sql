@@ -1,4 +1,4 @@
--- Tạo SEQUENCE cho các bảng
+-- Creat Sequence and Tables for Data Warehouse
 CREATE SEQUENCE company_id_seq;
 CREATE SEQUENCE topic_id_seq;
 CREATE SEQUENCE new_id_seq;

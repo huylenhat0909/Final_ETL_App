@@ -17,7 +17,7 @@ def crawl_markets():
 
     # Get the current date for filename
     date = datetime.date.today().strftime("%Y_%m_%d")
-    path = f"/home/anhcu/Final_ETL_App/etl-app/backend/data/raw/markets/crawl_markets_{date}.json"
+    path = f"C:/Users/ADMIN/Data Engineer/Final_ETL_App/etl-app/backend/data/raw/markets/crawl_markets_{date}.json"
 
     # Write the JSON data to a file
     with open(path, "w") as outfile:
@@ -27,4 +27,4 @@ def crawl_markets():
     print(f"Extracted {len(data)} regions and exchanges.")
     print(f"Data saved to {path}")
 
-# crawl_markets()
+crawl_markets()
